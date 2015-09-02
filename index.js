@@ -31,7 +31,17 @@ var int_array_to_hex = function (int_array) {
     return hex.slice(1);//slice is to get rid of the leading :
 }
 
-
+//small throttle code
+var DELAY = 1000*10;
+var LAST_CALL = null;
+var throttle = function() {
+    if (Date.now() - LAST_CALL > DELAY)
+    {
+        LAST_CALL = Date.now();
+        return true;
+    }
+    return false;
+}
 
 var stream = require('stream');
 
@@ -45,7 +55,9 @@ var register = function(mac_address) {
         if(packet.payload.ethertype === 2054) { //ensures it is an arp packet
             if(_.isEqual(packet.payload.payload.sender_ha.addr, 
                          hex_to_int_array(mac_address))) {
-                readStream.emit('detected');
+                if (throttle){
+                    readStream.emit('detected');    
+                }
             }	
         }
     });

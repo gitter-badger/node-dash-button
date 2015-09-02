@@ -37,6 +37,13 @@ startTests = function() {
             done();
         });        
     });
+    it('should throttle multiple requests', function(done) {
+        this.timeout(30000);//sometimes the detection takes a while
+    	setInterval(sendarp, 100); //giving pcap time to set up a listener   
+        dash_button.register(hex).on('detected', function(){
+            done();//done should only be called once.
+        });        
+    });
 }
 startTests();
 
